@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed;
 
     private float xInput;
-    public bool isRunning;
 
     private void Awake()
     {
@@ -33,8 +32,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAnimations()
     {
-        isRunning = rb.linearVelocity.x != 0;
-        anim.SetBool("isRunning", isRunning);
+        anim.SetFloat("xVelocity", xInput);
+        //anim.SetFloat("xVelocity", xInput rb.linearVelocity.x);
     }
 
     private void HandleMovement()

@@ -4,13 +4,17 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
-    [SerializeField] private float moveSpeed;
-    private float xInput;
+    private Animator anim;
 
+    [SerializeField] private float moveSpeed;
+
+    private float xInput;
+    public bool isRunning;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
     }
     
     private void Start()
@@ -21,7 +25,16 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         xInput = Input.GetAxisRaw("Horizontal");
+
         HandleMovement();
+        HandleAnimations();
+
+    }
+
+    private void HandleAnimations()
+    {
+        isRunning = rb.linearVelocity.x != 0;
+        anim.SetBool("isRunning", isRunning);
     }
 
     private void HandleMovement()

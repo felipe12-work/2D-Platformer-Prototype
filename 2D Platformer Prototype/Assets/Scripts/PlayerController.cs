@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     [SerializeField] private LayerMask WhatIsGround;
 
+    // direção que o personagem está virado: 1 = direita, -1 = esquerda
+    private int facingDirection = 1;
+    // flag lógica — true se o personagem estiver voltado para a direita
+    private bool facingRight = true;
+
     private float xInput;
 
     private void Awake()
@@ -33,6 +38,7 @@ public class PlayerController : MonoBehaviour
         HandleCollision();
         HandleInput();
         HandleMovement();
+        HandleFlip();
         HandleAnimations();
 
     }
@@ -41,10 +47,8 @@ public class PlayerController : MonoBehaviour
     {
         xInput = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            Jump();
-        }
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded) Jump();
+
     }
 
     private void Jump() => rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
@@ -67,6 +71,19 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);
     }
 
+    private void HandleFlip()
+    {
+        if (rb.linearVelocity.x < 0 && facingRight || rb.linearVelocity.x > 0 && ! facingRight) Flip();
+    }
+
+    private void Flip()
+    {
+        facingDirection = facingDirection * -1;
+        //transform.Rotate(0, 180, 0);
+        facingRight = !facingRight;
+        float yRotation = facingRight ? 0f : 180f;
+        transform.localEulerAngles = new Vector3(0f, yRotation, 0f);
+    }
     private void OnDrawGizmos()
     {
         Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - groundCheck));
